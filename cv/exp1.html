@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision - Experiment 1</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:#000;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    color:#000;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#ffffff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Computer Vision - Experiment 1<br>Find the Frame Rate (FPS) of a Video using OpenCV</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To develop a Python program using OpenCV to determine the frame rate (FPS) of a video and display the FPS value on the video during playback.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>OpenCV Library (cv2)</li>
+<li>VS Code / PyCharm / Spyder</li>
+<li>Input Video File (.mp4)</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Frame Rate (FPS - Frames Per Second) indicates the number of frames displayed every second in a video. A higher FPS results in smoother video playback. OpenCV provides the <b>CAP_PROP_FPS</b> property to retrieve the FPS of a video file. The obtained value can be displayed on each frame using the <b>cv2.putText()</b> function while the video is being played.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import cv2
+
+# Open the video file
+video = cv2.VideoCapture("input_video.mp4")
+
+# Get frame rate
+fps = video.get(cv2.CAP_PROP_FPS)
+
+print("Frame Rate (FPS):", fps)
+
+while True:
+    ret, frame = video.read()
+
+    if not ret:
+        break
+
+    # Display FPS on the frame
+    cv2.putText(frame,
+                f"FPS: {fps:.2f}",
+                (20, 40),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 255, 0),
+                2)
+
+    cv2.imshow("Video with FPS", frame)
+
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
+
+video.release()
+cv2.destroyAllWindows()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Parameter</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Input Video</td>
+<td>input_video.mp4</td>
+</tr>
+
+<tr>
+<td>Detected FPS</td>
+<td>30.00 FPS (example)</td>
+</tr>
+
+<tr>
+<td>Console Output</td>
+<td>Frame Rate (FPS): 30.0</td>
+</tr>
+
+<tr>
+<td>Video Output</td>
+<td>FPS value displayed on every frame</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+The frame rate (FPS) of the video was successfully extracted using OpenCV and displayed on every frame during playback. The experiment demonstrates how to read video properties and overlay text information on video frames using Python.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand the concept of video frame rate (FPS).</li>
+<li>Use OpenCV to read video files.</li>
+<li>Retrieve video properties using CAP_PROP_FPS.</li>
+<li>Overlay text on video frames using <code>putText()</code>.</li>
+<li>Display and process videos frame by frame in Python.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
