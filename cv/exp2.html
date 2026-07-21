@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision - Experiment 2</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Computer Vision - Experiment 2<br>
+Basic Image Processing using Python and OpenCV</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To implement basic image processing functions using Python and OpenCV.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>OpenCV (cv2)</li>
+<li>NumPy</li>
+<li>VS Code / PyCharm / Spyder</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Image processing involves manipulating digital images to improve their quality or extract useful information. OpenCV provides built-in functions for common image processing tasks such as image reading, displaying, grayscale conversion, resizing, rotation, and saving processed images. These operations form the foundation for advanced computer vision applications like object detection, image recognition, and image segmentation.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import cv2
+
+# Read image
+img = cv2.imread("input.jpg")
+
+# Display original image
+cv2.imshow("Original Image", img)
+
+# Convert image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+cv2.imshow("Grayscale Image", gray)
+
+# Resize image
+resized = cv2.resize(img, (400, 300))
+cv2.imshow("Resized Image", resized)
+
+# Rotate image by 90 degrees clockwise
+rotated = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+cv2.imshow("Rotated Image", rotated)
+
+# Save grayscale image
+cv2.imwrite("gray_image.jpg", gray)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Image Reading</td>
+<td>Input image loaded successfully.</td>
+</tr>
+
+<tr>
+<td>Grayscale Conversion</td>
+<td>Color image converted to grayscale.</td>
+</tr>
+
+<tr>
+<td>Image Resizing</td>
+<td>Image resized to 400 × 300 pixels.</td>
+</tr>
+
+<tr>
+<td>Image Rotation</td>
+<td>Image rotated 90° clockwise.</td>
+</tr>
+
+<tr>
+<td>Image Saving</td>
+<td>Processed grayscale image saved as <b>gray_image.jpg</b>.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Basic image processing operations including image reading, displaying, grayscale conversion, resizing, rotation, and image saving were successfully implemented using Python and OpenCV. The processed images were generated correctly, demonstrating the fundamental capabilities of OpenCV for image manipulation.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Read and display digital images using OpenCV.</li>
+<li>Convert color images to grayscale.</li>
+<li>Resize and rotate images efficiently.</li>
+<li>Save processed images to disk.</li>
+<li>Understand fundamental image processing techniques.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
