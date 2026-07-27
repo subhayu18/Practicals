@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 2</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 2<br>
+Morphological Word Generation using Python</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To generate valid inflected word forms from base lemmas and grammatical tags using Python.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>LemmInflect Library</li>
+<li>NLTK (Optional)</li>
+<li>Jupyter Notebook / Google Colab</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Morphological generation is the process of converting a base word (lemma) into its correct surface form using grammatical information such as tense, number, or degree of comparison. Libraries like <b>LemmInflect</b> use morphological rules and lexical knowledge to generate both regular and irregular word forms. This technique is widely used in machine translation, text generation, dialogue systems, and grammar correction.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>from lemminflect import getInflection
+
+words = [
+    ("play", "VBD"),
+    ("study", "VBG"),
+    ("go", "VBD"),
+    ("child", "NNS"),
+    ("city", "NNS"),
+    ("good", "JJR"),
+    ("good", "JJS")
+]
+
+print("Lemma\tTag\tGenerated Form")
+print("-" * 40)
+
+for lemma, tag in words:
+    form = getInflection(lemma, tag)
+    print(f"{lemma}\t{tag}\t{form}")</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Lemma</th>
+<th>Generated Form</th>
+</tr>
+
+<tr>
+<td>play (VBD)</td>
+<td>played</td>
+</tr>
+
+<tr>
+<td>study (VBG)</td>
+<td>studying</td>
+</tr>
+
+<tr>
+<td>go (VBD)</td>
+<td>went</td>
+</tr>
+
+<tr>
+<td>child (NNS)</td>
+<td>children</td>
+</tr>
+
+<tr>
+<td>good (JJR/JJS)</td>
+<td>better, best</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Morphological word generation was successfully implemented using the LemmInflect library. The experiment generated correct inflected forms for both regular and irregular words based on grammatical tags, demonstrating the importance of morphology in Natural Language Processing applications.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Generate inflected words from base lemmas.</li>
+<li>Use Penn Treebank grammatical tags effectively.</li>
+<li>Differentiate regular and irregular word forms.</li>
+<li>Apply morphological generation in NLP tasks.</li>
+<li>Understand the role of lexical resources in word generation.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
