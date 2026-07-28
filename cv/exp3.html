@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision - Experiment 3</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Computer Vision - Experiment 3<br>
+Warp Perspective Transformation using Python and OpenCV</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To extract a sub-image from a larger image using perspective transformation (warp perspective) and display the input and output images together using Python and OpenCV.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>OpenCV (cv2)</li>
+<li>NumPy</li>
+<li>VS Code / PyCharm / Spyder</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Perspective transformation is a geometric operation used to obtain a corrected or top-down view of a selected region in an image. OpenCV provides the <b>cv2.getPerspectiveTransform()</b> function to compute the transformation matrix and <b>cv2.warpPerspective()</b> to generate the warped output. Stacking the original and transformed images allows easy visual comparison and is widely used in applications such as document scanning, image rectification, object detection, and augmented reality.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import cv2
+import numpy as np
+
+# Read input image
+img = cv2.imread("input.jpg")
+
+# Define source points
+pts1 = np.float32([[100, 100],
+                   [400, 100],
+                   [100, 300],
+                   [400, 300]])
+
+# Define destination points
+width, height = 300, 200
+
+pts2 = np.float32([[0, 0],
+                   [width, 0],
+                   [0, height],
+                   [width, height]])
+
+# Get perspective transformation matrix
+matrix = cv2.getPerspectiveTransform(pts1, pts2)
+
+# Apply warp perspective
+warped = cv2.warpPerspective(img, matrix, (width, height))
+
+# Resize warped image
+warped_resized = cv2.resize(
+    warped, (img.shape[1], img.shape[0])
+)
+
+# Stack images horizontally
+stacked = np.hstack((img, warped_resized))
+
+# Display result
+cv2.imshow("Input and Warped Output", stacked)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Image Loading</td>
+<td>Input image loaded successfully.</td>
+</tr>
+
+<tr>
+<td>Perspective Transformation</td>
+<td>Selected region extracted and rectified.</td>
+</tr>
+
+<tr>
+<td>Warp Perspective</td>
+<td>Generated a corrected top-down view of the ROI.</td>
+</tr>
+
+<tr>
+<td>Image Stacking</td>
+<td>Original and warped images displayed side-by-side.</td>
+</tr>
+
+<tr>
+<td>Output Display</td>
+<td>Warped result compared visually with the original image.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+The selected region of the input image was successfully extracted using perspective transformation. The warped output and original image were stacked together and displayed, demonstrating the effectiveness of OpenCV's perspective transformation for image rectification and region extraction.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand perspective transformation concepts.</li>
+<li>Compute transformation matrices using OpenCV.</li>
+<li>Extract and rectify regions of interest.</li>
+<li>Stack multiple images for comparison.</li>
+<li>Apply warp perspective in computer vision applications.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
