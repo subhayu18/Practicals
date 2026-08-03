@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 3</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 3<br>
+Regular Expressions for Text Processing</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To use Python regular expressions for searching, extracting, cleaning, validating, and transforming structured patterns in text.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>Python <code>re</code> Module</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+<li>Any Python IDE</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Regular Expressions (Regex) are powerful pattern-matching tools used to search, extract, validate, and manipulate text efficiently. Python provides built-in regex support through the <b>re</b> module. Regex is widely used in NLP preprocessing for extracting structured information such as email addresses, phone numbers, dates, hashtags, and for cleaning or normalizing text before further analysis.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import re
+
+text = """
+Contact us at nlp.lab@example.edu or support@company.in.
+Call +91-9876543210 or 81468 12735 on 06-07-2026.
+Follow #NLP and #TextMining. Extra spaces should be normalized.
+"""
+
+email_pat = r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"
+phone_pat = r"(?:\+91[-\s]?)?\d{5}[\s-]?\d{5}"
+date_pat = r"\b\d{2}[-/]\d{2}[-/]\d{4}\b"
+hashtag_pat = r"#\w+"
+
+print("Emails:", re.findall(email_pat, text))
+print("Phones:", re.findall(phone_pat, text))
+print("Dates:", re.findall(date_pat, text))
+print("Hashtags:", re.findall(hashtag_pat, text))
+
+clean_text = re.sub(r"\s+", " ", text).strip()
+masked = re.sub(email_pat, "<EMAIL>", clean_text)
+
+print("Clean text:", clean_text)
+print("Masked text:", masked)</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Email Extraction</td>
+<td>Email addresses detected successfully.</td>
+</tr>
+
+<tr>
+<td>Phone & Date Extraction</td>
+<td>Phone numbers and dates identified correctly.</td>
+</tr>
+
+<tr>
+<td>Hashtag Detection</td>
+<td>Hashtags extracted from the text.</td>
+</tr>
+
+<tr>
+<td>Text Cleaning</td>
+<td>Extra whitespace normalized using regex.</td>
+</tr>
+
+<tr>
+<td>Data Masking</td>
+<td>Email addresses replaced with &lt;EMAIL&gt;.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Regular expressions were successfully used to extract structured information, normalize whitespace, and mask sensitive data from text. The experiment demonstrated how regex simplifies text preprocessing and information extraction in NLP applications.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Write and apply regex patterns effectively.</li>
+<li>Extract structured text entities using regex.</li>
+<li>Clean and normalize textual data.</li>
+<li>Perform substitution and masking operations.</li>
+<li>Use regex in NLP preprocessing tasks.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
