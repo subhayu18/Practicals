@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 4</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 4<br>
+Word Embeddings using Word2Vec and GloVe</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To generate word embeddings using Word2Vec and GloVe and explore the semantic representation of words in a numerical vector space.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>Gensim Library</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+<li>Pre-trained GloVe Word Embeddings</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Word embeddings are numerical representations of words in a continuous vector space. Words with similar meanings or contextual usage are represented by vectors that are close to each other. <b>Word2Vec</b> learns word representations from a text corpus using contextual information and can generate embeddings using CBOW or Skip-gram approaches.
+</p>
+
+<p>
+<b>GloVe (Global Vectors for Word Representation)</b> generates word embeddings by using global word co-occurrence statistics from a large corpus. Both Word2Vec and GloVe capture semantic relationships between words and are widely used in NLP tasks such as text classification, sentiment analysis, information retrieval, and language modeling.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import gensim
+from gensim.models import Word2Vec
+import gensim.downloader as api
+
+# Sample corpus
+sentences = [
+    ["natural", "language", "processing", "is", "interesting"],
+    ["machine", "learning", "helps", "process", "language"],
+    ["natural", "language", "is", "used", "in", "NLP"],
+    ["word", "embeddings", "represent", "words", "as", "vectors"],
+    ["machine", "learning", "and", "NLP", "are", "related"]
+]
+
+# Train Word2Vec model
+word2vec_model = Word2Vec(
+    sentences,
+    vector_size=50,
+    window=3,
+    min_count=1,
+    workers=2
+)
+
+# Display Word2Vec vector
+print("Word2Vec vector for 'language':")
+print(word2vec_model.wv["language"])
+
+# Find similar words using Word2Vec
+print("\nSimilar words:")
+print(word2vec_model.wv.most_similar("language", topn=3))
+
+
+# Load pre-trained GloVe model
+glove_model = api.load("glove-wiki-gigaword-50")
+
+# Display GloVe vector
+print("\nGloVe vector for 'language':")
+print(glove_model["language"])
+
+# Find similar words using GloVe
+print("\nSimilar words using GloVe:")
+print(glove_model.most_similar("language", topn=3))</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Word2Vec Training</td>
+<td>Word vectors were learned from the given text corpus.</td>
+</tr>
+
+<tr>
+<td>Word2Vec Representation</td>
+<td>Words were represented as numerical vectors.</td>
+</tr>
+
+<tr>
+<td>Word2Vec Similarity</td>
+<td>Semantically related words were identified using vector similarity.</td>
+</tr>
+
+<tr>
+<td>GloVe Embeddings</td>
+<td>Pre-trained GloVe vectors were loaded successfully.</td>
+</tr>
+
+<tr>
+<td>GloVe Similarity</td>
+<td>Words with similar contextual representations were retrieved.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Word embeddings were successfully generated and explored using Word2Vec and GloVe. The experiment demonstrated how words can be represented as numerical vectors and how vector similarity can be used to identify semantically related words.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand the concept of word embeddings.</li>
+<li>Generate word vectors using Word2Vec.</li>
+<li>Use pre-trained GloVe embeddings.</li>
+<li>Find semantically similar words using vectors.</li>
+<li>Compare Word2Vec and GloVe representations.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
