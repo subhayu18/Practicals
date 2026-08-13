@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision - Experiment 4</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Computer Vision - Experiment 4<br>
+Contour and Shape Detection using Python and OpenCV</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To write a program to detect contours and shapes drawn within a given image using Python and OpenCV.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>OpenCV (cv2)</li>
+<li>NumPy</li>
+<li>VS Code / PyCharm / Spyder</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Contour detection is a technique used to identify the boundaries of objects in an image. OpenCV provides the <b>cv2.findContours()</b> function to detect contours from a binary image. The detected contours can be analyzed using their area and perimeter to identify different geometric shapes.
+</p>
+
+<p>
+Shape detection can be performed by approximating the contour using <b>cv2.approxPolyDP()</b>. The number of vertices in the approximated contour can then be used to identify shapes such as triangles, rectangles, squares, and circles.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import cv2
+import numpy as np
+
+# Read the input image
+img = cv2.imread("shapes.jpg")
+
+# Convert image to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Apply thresholding
+_, thresh = cv2.threshold(
+    gray, 127, 255, cv2.THRESH_BINARY
+)
+
+# Find contours
+contours, _ = cv2.findContours(
+    thresh,
+    cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE
+)
+
+for contour in contours:
+
+    # Calculate contour perimeter
+    perimeter = cv2.arcLength(contour, True)
+
+    # Approximate contour
+    approx = cv2.approxPolyDP(
+        contour,
+        0.02 * perimeter,
+        True
+    )
+
+    # Get number of vertices
+    vertices = len(approx)
+
+    # Identify shape
+    if vertices == 3:
+        shape = "Triangle"
+    elif vertices == 4:
+        shape = "Rectangle / Square"
+    elif vertices > 4:
+        shape = "Circle"
+
+    # Draw contour
+    cv2.drawContours(
+        img,
+        [approx],
+        -1,
+        (0, 255, 0),
+        3
+    )
+
+    # Display shape name
+    x, y, w, h = cv2.boundingRect(approx)
+
+    cv2.putText(
+        img,
+        shape,
+        (x, y - 10),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (0, 0, 255),
+        2
+    )
+
+# Display result
+cv2.imshow("Detected Shapes", img)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Image Reading</td>
+<td>The input image containing geometric shapes was loaded successfully.</td>
+</tr>
+
+<tr>
+<td>Grayscale Conversion</td>
+<td>The color image was converted into a grayscale image.</td>
+</tr>
+
+<tr>
+<td>Thresholding</td>
+<td>A binary image was generated to separate objects from the background.</td>
+</tr>
+
+<tr>
+<td>Contour Detection</td>
+<td>Object boundaries were detected using <b>findContours()</b>.</td>
+</tr>
+
+<tr>
+<td>Shape Detection</td>
+<td>Shapes were identified based on the number of contour vertices.</td>
+</tr>
+
+<tr>
+<td>Output</td>
+<td>Detected contours and corresponding shape names were displayed on the image.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Contours and geometric shapes in the given image were successfully detected using Python and OpenCV. The experiment demonstrated contour extraction, contour approximation, and basic shape identification based on the number of vertices.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand the concept of image contours.</li>
+<li>Detect object boundaries using OpenCV.</li>
+<li>Approximate contours using polygonal curves.</li>
+<li>Identify basic geometric shapes from contours.</li>
+<li>Apply contour detection in computer vision tasks.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
