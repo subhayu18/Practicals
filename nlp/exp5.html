@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 5</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 5<br>
+Bigram Language Model and Add-1 Smoothing</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To build a simple bigram language model, calculate bigram probabilities, observe the zero-frequency problem for unseen word pairs, and resolve it using Add-1 (Laplace) smoothing.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>NLTK Library</li>
+<li>Collections Module</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+A bigram language model estimates the probability of a word occurring given the immediately preceding word. The probability is calculated from the frequency of the word pair and the frequency of the first word.
+</p>
+
+<p>
+The <b>zero-frequency problem</b> occurs when an unseen bigram receives a probability of zero. Add-1 (Laplace) smoothing solves this problem by adding one to every bigram count and adjusting the denominator using the vocabulary size. This ensures that unseen word pairs receive a non-zero probability.
+</p>
+
+<p>
+For higher-order language models, techniques such as <b>Kneser-Ney smoothing</b> can provide more realistic probability estimates by using context-sensitive discounting and lower-order distributions.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>from collections import Counter
+
+# Training data
+text = "I love NLP I love Python I like AI"
+words = text.lower().split()
+
+# Create bigrams
+bigrams = []
+
+for i in range(len(words) - 1):
+    bigrams.append((words[i], words[i + 1]))
+
+# Count bigrams and unigrams
+bigram_counts = Counter(bigrams)
+unigram_counts = Counter(words)
+
+# Vocabulary
+vocabulary = set(words)
+V = len(vocabulary)
+
+# Without smoothing
+def bigram_probability(w1, w2):
+    return bigram_counts[(w1, w2)] / unigram_counts[w1]
+
+# Add-1 / Laplace smoothing
+def smoothed_bigram_probability(w1, w2):
+    return (bigram_counts[(w1, w2)] + 1) / \
+           (unigram_counts[w1] + V)
+
+# Display results
+print("Words:", words)
+print("\nBigrams:", bigrams)
+print("\nBigram Counts:", bigram_counts)
+print("\nUnigram Counts:", unigram_counts)
+print("\nVocabulary Size:", V)
+
+print("\nWithout smoothing:")
+print("P(love | i) =",
+      round(bigram_probability("i", "love"), 4))
+print("P(ai | love) =",
+      round(bigram_probability("love", "ai"), 4))
+
+print("\nWith Add-1 smoothing:")
+print("P(love | i) =",
+      round(smoothed_bigram_probability("i", "love"), 4))
+print("P(ai | love) =",
+      round(smoothed_bigram_probability("love", "ai"), 4))</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Bigram Creation</td>
+<td>Consecutive word pairs were generated from the training text.</td>
+</tr>
+
+<tr>
+<td>Frequency Counting</td>
+<td>Bigram and unigram frequencies were calculated using Counter.</td>
+</tr>
+
+<tr>
+<td>Probability Estimation</td>
+<td>P(love | i) was calculated as 2/3 ≈ 0.6667.</td>
+</tr>
+
+<tr>
+<td>Zero-Frequency Problem</td>
+<td>P(ai | love) became 0 because the bigram "love ai" was unseen.</td>
+</tr>
+
+<tr>
+<td>Add-1 Smoothing</td>
+<td>The unseen bigram received a non-zero probability of 0.125.</td>
+</tr>
+
+<tr>
+<td>Vocabulary</td>
+<td>The vocabulary contained 6 distinct words.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+The bigram language model was successfully implemented using frequency counts from a training corpus. The zero-frequency problem was observed for unseen word pairs, and Add-1 (Laplace) smoothing successfully assigned them non-zero probabilities. The experiment demonstrates how smoothing improves language-model probability estimation.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Build a basic bigram language model.</li>
+<li>Calculate conditional bigram probabilities.</li>
+<li>Understand the zero-frequency problem.</li>
+<li>Apply Add-1 (Laplace) smoothing.</li>
+<li>Compare raw and smoothed probabilities.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
