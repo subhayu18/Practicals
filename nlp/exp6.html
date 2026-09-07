@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 6</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 6<br>
+POS Tagging using Hidden Markov Models (HMM)</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To implement Part-of-Speech (POS) Tagging using a Hidden Markov Model (HMM) and assign grammatical tags to words in a given sentence.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>NLTK Library</li>
+<li>Hidden Markov Model (HMM)</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Part-of-Speech (POS) tagging is the process of assigning grammatical categories such as noun, verb, adjective, and adverb to words according to their context. In an HMM-based POS tagger, the words are treated as observations and their POS tags are treated as hidden states.
+</p>
+
+<p>
+The HMM estimates the most probable sequence of POS tags using <b>transition probabilities</b> between tags and <b>emission probabilities</b> of words given tags. The Viterbi algorithm can then be used to determine the most likely sequence of hidden POS states for a sentence.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import nltk
+from nltk.tag import hmm
+from nltk.probability import LidstoneProbDist
+
+# Training corpus
+training_data = [
+    [
+        ("michael", "NNP"),
+        ("scott", "NNP"),
+        ("is", "VBZ"),
+        ("the", "DT"),
+        ("manager", "NN")
+    ],
+    [
+        ("jim", "NNP"),
+        ("likes", "VBZ"),
+        ("the", "DT"),
+        ("office", "NN")
+    ],
+    [
+        ("pam", "NNP"),
+        ("is", "VBZ"),
+        ("a", "DT"),
+        ("good", "JJ"),
+        ("artist", "NN")
+    ],
+    [
+        ("dwight", "NNP"),
+        ("works", "VBZ"),
+        ("at", "IN"),
+        ("the", "DT"),
+        ("office", "NN")
+    ],
+    [
+        ("angela", "NNP"),
+        ("likes", "VBZ"),
+        ("cats", "NNS")
+    ]
+]
+
+# Train HMM tagger
+trainer = hmm.HiddenMarkovModelTrainer()
+
+tagger = trainer.train(
+    training_data,
+    estimator=lambda fd, bins:
+        LidstoneProbDist(fd, 0.1, bins)
+)
+
+# Test sentence
+sentence = [
+    "jim", "works", "at", "the", "office"
+]
+
+# POS tagging
+result = tagger.tag(sentence)
+
+print("POS Tags:")
+for word, tag in result:
+    print(word, "->", tag)</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Word</th>
+<th>Expected POS Category</th>
+<th>Observed Tag</th>
+</tr>
+
+<tr>
+<td>Jim</td>
+<td>Proper Noun</td>
+<td>NNP</td>
+</tr>
+
+<tr>
+<td>works</td>
+<td>Verb</td>
+<td>VBZ</td>
+</tr>
+
+<tr>
+<td>at</td>
+<td>Preposition</td>
+<td>IN</td>
+</tr>
+
+<tr>
+<td>the</td>
+<td>Determiner</td>
+<td>DT</td>
+</tr>
+
+<tr>
+<td>office</td>
+<td>Noun</td>
+<td>NN</td>
+</tr>
+
+</table>
+
+<p style="margin-top:12px;">
+The HMM assigns POS tags based on the learned transition and emission probabilities from the training corpus.
+</p>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+POS tagging was successfully implemented using a Hidden Markov Model. The model learned relationships between words and grammatical tags from the training corpus and assigned the most probable POS tags to words in the test sentence.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand POS tagging using HMMs.</li>
+<li>Model transitions between grammatical tags.</li>
+<li>Learn word emission probabilities.</li>
+<li>Apply HMMs to tag unseen sentences.</li>
+<li>Interpret POS tags in NLP applications.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
