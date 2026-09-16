@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Vision - Experiment 7</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:15px;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Computer Vision - Experiment 7<br>
+Face Detection and Face Mesh using MediaPipe and OpenCV</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To write a program to detect faces and face mesh using MediaPipe in Python and OpenCV.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.x</li>
+<li>OpenCV (cv2)</li>
+<li>MediaPipe</li>
+<li>NumPy</li>
+<li>VS Code / PyCharm / Spyder</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Face detection is a computer vision technique used to locate human faces in an image or video. MediaPipe provides solutions for detecting faces and identifying detailed facial landmarks. OpenCV can be used to capture webcam frames and display the processed results in real time.
+</p>
+
+<p>
+Face Mesh extends face detection by identifying a dense set of landmarks across the face. These landmarks represent important facial regions such as the eyes, nose, lips, and face outline. The detected mesh can be visualized by drawing connections between the facial landmarks.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import cv2
+import mediapipe as mp
+
+# Initialize MediaPipe Face Mesh
+mp_face_mesh = mp.solutions.face_mesh
+mp_draw = mp.solutions.drawing_utils
+
+face_mesh = mp_face_mesh.FaceMesh(
+    static_image_mode=False,
+    max_num_faces=2,
+    refine_landmarks=True,
+    min_detection_confidence=0.5,
+    min_tracking_confidence=0.5
+)
+
+# Open webcam
+cap = cv2.VideoCapture(0)
+
+while True:
+
+    success, frame = cap.read()
+
+    if not success:
+        break
+
+    # Convert BGR to RGB
+    rgb_frame = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2RGB
+    )
+
+    # Detect face landmarks
+    results = face_mesh.process(rgb_frame)
+
+    # Draw face mesh
+    if results.multi_face_landmarks:
+
+        for face_landmarks in results.multi_face_landmarks:
+
+            mp_draw.draw_landmarks(
+                frame,
+                face_landmarks,
+                mp_face_mesh.FACEMESH_TESSELATION
+            )
+
+    # Display output
+    cv2.imshow("Face Detection and Face Mesh", frame)
+
+    # Press q to exit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Webcam Capture</td>
+<td>Live video frames were captured successfully using OpenCV.</td>
+</tr>
+
+<tr>
+<td>Color Conversion</td>
+<td>Frames were converted from BGR to RGB for MediaPipe processing.</td>
+</tr>
+
+<tr>
+<td>Face Detection</td>
+<td>Faces were detected from the live webcam feed.</td>
+</tr>
+
+<tr>
+<td>Face Landmarks</td>
+<td>Facial landmarks were identified across the detected face.</td>
+</tr>
+
+<tr>
+<td>Face Mesh</td>
+<td>A mesh of connected facial landmarks was displayed on the face.</td>
+</tr>
+
+<tr>
+<td>Real-Time Processing</td>
+<td>The face mesh followed facial movements during live video.</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Face detection and face mesh were successfully implemented using MediaPipe and OpenCV. The system detected faces from the webcam feed and displayed connected facial landmarks in real time, demonstrating the use of facial landmark detection for computer vision applications.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+
+<ul class="outcomes">
+<li>Understand the concept of face detection.</li>
+<li>Capture and process webcam frames using OpenCV.</li>
+<li>Detect facial landmarks using MediaPipe.</li>
+<li>Visualize facial landmarks as a face mesh.</li>
+<li>Apply face tracking in computer vision applications.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
