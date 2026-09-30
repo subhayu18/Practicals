@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 9</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:14px;
+    line-height:1.6;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 9<br>
+Topic Modelling using Latent Dirichlet Allocation (LDA)</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To perform topic modelling on a collection of text documents using Latent Dirichlet Allocation (LDA) and identify the underlying topics based on word distributions.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>Gensim Library</li>
+<li>NLTK Library</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+<li>Collections and Regular Expression Modules</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Topic modelling is an unsupervised machine learning technique used to discover hidden thematic structures in a collection of documents. It identifies groups of words that frequently occur together and uses them to represent topics within the corpus.
+</p>
+
+<p>
+<b>Latent Dirichlet Allocation (LDA)</b> is a probabilistic topic modelling algorithm that assumes each document contains a mixture of topics and each topic is characterized by a probability distribution over words. LDA uses statistical inference to estimate the topic distribution of documents and the word distribution of topics.
+</p>
+
+<p>
+LDA is widely used in document clustering, information retrieval, text summarization, and large-scale text analysis.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import re
+import nltk
+from gensim import corpora
+from gensim.models import LdaModel
+
+# Sample documents
+documents = [
+    "Machine learning and artificial intelligence are transforming technology.",
+    "Deep learning uses neural networks for intelligent systems.",
+    "Python is widely used for machine learning and data science.",
+    "Football and cricket are popular sports around the world.",
+    "Players practice regularly to improve their sports performance.",
+    "Cricket teams compete in international tournaments."
+]
+
+# Text preprocessing
+def preprocess(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    tokens = text.split()
+    return tokens
+
+processed_docs = [preprocess(doc) for doc in documents]
+
+# Create dictionary
+dictionary = corpora.Dictionary(processed_docs)
+
+# Convert documents into Bag of Words
+corpus = [
+    dictionary.doc2bow(doc)
+    for doc in processed_docs
+]
+
+# Train LDA model
+lda_model = LdaModel(
+    corpus=corpus,
+    id2word=dictionary,
+    num_topics=2,
+    random_state=42,
+    passes=20,
+    alpha='auto'
+)
+
+# Display topics
+print("Discovered Topics:\n")
+
+for topic_id, topic in lda_model.print_topics(
+    num_topics=2,
+    num_words=5
+):
+    print("Topic", topic_id + 1, ":", topic)
+
+# Display document-topic distribution
+print("\nDocument Topic Distribution:")
+
+for i, doc in enumerate(corpus):
+    print(
+        "Document", i + 1,
+        lda_model.get_document_topics(doc)
+    )</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Text Preprocessing</td>
+<td>Documents were converted to lowercase and cleaned of unnecessary characters.</td>
+</tr>
+
+<tr>
+<td>Dictionary Creation</td>
+<td>Unique words were mapped to numerical identifiers.</td>
+</tr>
+
+<tr>
+<td>Bag of Words</td>
+<td>Documents were represented using word-frequency counts.</td>
+</tr>
+
+<tr>
+<td>LDA Training</td>
+<td>The model identified two latent topics from the document collection.</td>
+</tr>
+
+<tr>
+<td>Topic Distribution</td>
+<td>Each topic was represented by a set of words with associated probabilities.</td>
+</tr>
+
+<tr>
+<td>Document Classification</td>
+<td>Documents received probability distributions indicating their association with the discovered topics.</td>
+</tr>
+</table>
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Topic modelling was successfully performed using Latent Dirichlet Allocation (LDA). The model identified underlying topics from the text collection by analyzing word co-occurrence patterns and generated topic distributions for individual documents. The experiment demonstrated how unsupervised learning can reveal thematic structures in textual data.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+<ul class="outcomes">
+<li>Understand the fundamentals of topic modelling.</li>
+<li>Preprocess documents for LDA analysis.</li>
+<li>Represent text using Bag of Words.</li>
+<li>Discover latent topics using LDA.</li>
+<li>Interpret topic and document distributions.</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>
