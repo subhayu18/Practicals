@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 10</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:14px;
+    line-height:1.6;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 10<br>
+Named Entity Recognition using Conditional Random Fields (CRF)</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To implement Named Entity Recognition (NER) using Conditional Random Fields (CRF) and identify entities such as persons, organizations, and locations from natural language text.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>sklearn-crfsuite Library</li>
+<li>NLTK Library</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+<li>Python re Module</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Named Entity Recognition (NER) is an information extraction technique used to identify and classify named entities in text into predefined categories such as Person (PER), Organization (ORG), Location (LOC), and Miscellaneous (MISC).
+</p>
+
+<p>
+Conditional Random Fields (CRF) are probabilistic sequence models that predict labels for a sequence of observations by considering both the features of individual words and the relationships between adjacent labels. In NER, CRF uses features such as capitalization, prefixes, suffixes, and surrounding words to identify named entities.
+</p>
+
+<p>
+NER is widely used in information extraction, question answering, document analysis, search engines, and text mining.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code># Install before running:
+# pip install sklearn-crfsuite
+
+import nltk
+import sklearn_crfsuite
+
+# Training dataset in BIO format
+train_data = [
+    [
+        ("Subhayu", "B-PER"),
+        ("studies", "O"),
+        ("at", "O"),
+        ("Chandigarh", "B-LOC"),
+        ("University", "I-LOC")
+    ],
+    [
+        ("Google", "B-ORG"),
+        ("is", "O"),
+        ("located", "O"),
+        ("in", "O"),
+        ("California", "B-LOC")
+    ],
+    [
+        ("Virat", "B-PER"),
+        ("Kohli", "I-PER"),
+        ("plays", "O"),
+        ("cricket", "O")
+    ],
+    [
+        ("Microsoft", "B-ORG"),
+        ("develops", "O"),
+        ("software", "O")
+    ],
+    [
+        ("Delhi", "B-LOC"),
+        ("is", "O"),
+        ("a", "O"),
+        ("large", "O"),
+        ("city", "O")
+    ]
+]
+
+# Extract word features
+def word_features(sentence, i):
+
+    word = sentence[i]
+
+    features = {
+        "word.lower()": word.lower(),
+        "word.isupper()": word.isupper(),
+        "word.istitle()": word.istitle(),
+        "word.isdigit()": word.isdigit(),
+        "prefix-2": word[:2],
+        "suffix-3": word[-3:]
+    }
+
+    if i > 0:
+        features["previous_word"] = sentence[i - 1].lower()
+    else:
+        features["BOS"] = True
+
+    if i < len(sentence) - 1:
+        features["next_word"] = sentence[i + 1].lower()
+    else:
+        features["EOS"] = True
+
+    return features
+
+
+# Prepare training features
+X_train = []
+y_train = []
+
+for tagged_sentence in train_data:
+
+    words = [word for word, tag in tagged_sentence]
+    tags = [tag for word, tag in tagged_sentence]
+
+    X_train.append([
+        word_features(words, i)
+        for i in range(len(words))
+    ])
+
+    y_train.append(tags)
+
+
+# Initialize and train CRF
+crf = sklearn_crfsuite.CRF(
+    algorithm="lbfgs",
+    c1=0.1,
+    c2=0.1,
+    max_iterations=100,
+    all_possible_transitions=True
+)
+
+crf.fit(X_train, y_train)
+
+
+# Test sentence
+test_sentence = [
+    "Rahul", "works", "at", "Google", "in", "Delhi"
+]
+
+X_test = [[
+    word_features(test_sentence, i)
+    for i in range(len(test_sentence))
+]]
+
+# Predict named entities
+predictions = crf.predict(X_test)[0]
+
+print("Named Entity Recognition Results:\n")
+
+for word, tag in zip(test_sentence, predictions):
+    print(word, "->", tag)</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Dataset Preparation</td>
+<td>Training sentences were labelled using the BIO tagging scheme.</td>
+</tr>
+
+<tr>
+<td>Feature Extraction</td>
+<td>Word capitalization, prefixes, suffixes, and surrounding words were extracted.</td>
+</tr>
+
+<tr>
+<td>CRF Training</td>
+<td>The model learned relationships between word features and entity labels.</td>
+</tr>
+
+<tr>
+<td>Entity Recognition</td>
+<td>The model predicted entity categories for words in the test sentence.</td>
+</tr>
+
+<tr>
+<td>Output</td>
+<td>Words were assigned labels such as B-PER, B-ORG, B-LOC, and O.</td>
+</tr>
+</table>
+
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Named Entity Recognition was successfully implemented using Conditional Random Fields. The model learned sequence-labeling patterns from a labelled dataset and identified named entities in a test sentence. The experiment demonstrated the use of feature-based sequence modelling for extracting structured information from natural language text.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+<ul class="outcomes">
+<li>Understand the concept of Named Entity Recognition.</li>
+<li>Identify persons, organizations, and locations in text.</li>
+<li>Apply the BIO tagging scheme.</li>
+<li>Extract useful features for sequence labelling.</li>
+<li>Implement CRF-based entity recognition.</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>
