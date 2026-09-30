@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision - Practical 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            line-height: 1.7;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #e67e73;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 5px solid #e67e73;
+            padding-left: 12px;
+            margin-top: 30px;
+        }
+        pre {
+            background: #202b38;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        code {
+            font-family: Consolas, monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #fce9e6;
+        }
+        .note {
+            background: #fff5f2;
+            border-left: 4px solid #e67e73;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .result {
+            background: #eafaf1;
+            border-left: 5px solid #27ae60;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Computer Vision - Practical 8<br>Camera Calibration</h1>
+
+    <h2>1. Aim</h2>
+    <p>
+        To implement camera calibration using a reference object of known
+        dimensions and determine the real length of a pen from its image
+        using pixel-to-centimeter conversion.
+    </p>
+
+    <h2>2. Software Used</h2>
+    <ul>
+        <li>Python 3.x</li>
+        <li>OpenCV</li>
+        <li>NumPy</li>
+        <li>Matplotlib</li>
+        <li>Jupyter Notebook / Google Colab</li>
+    </ul>
+
+    <h2>3. Theory</h2>
+    <p>
+        Camera calibration is the process of establishing a relationship
+        between image measurements and real-world dimensions. It is
+        commonly used in computer vision to estimate object sizes,
+        correct lens distortion, and determine camera parameters.
+    </p>
+
+    <p>
+        In this experiment, a simple reference-based calibration technique
+        is used. An object of known length is placed in the same plane
+        as the pen. The number of pixels corresponding to the reference
+        object is measured to calculate the pixel-to-centimeter ratio.
+    </p>
+
+    <p><b>Calibration formula:</b></p>
+    <p>
+        Pixels per centimeter =
+        Reference length in pixels / Actual reference length in cm
+    </p>
+
+    <p><b>Pen length:</b></p>
+    <p>
+        Actual pen length =
+        Pen length in pixels / Pixels per centimeter
+    </p>
+
+    <div class="note">
+        <b>Note:</b> The reference object and pen should lie in the same
+        plane and be photographed from a similar angle. This method
+        estimates physical length but is not a substitute for full
+        intrinsic camera calibration using a chessboard pattern.
+    </div>
+
+    <h2>4. Input Code</h2>
+
+    <pre><code>import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Upload or provide the image path
+image_path = "pen_image.jpg"
+
+# Read image
+image = cv2.imread(image_path)
+
+if image is None:
+    raise FileNotFoundError("Image not found. Check the file path.")
+
+# Convert BGR to RGB
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+plt.figure(figsize=(10, 6))
+plt.imshow(image_rgb)
+plt.title("Input Image")
+plt.axis("off")
+plt.show()
+
+# Known reference length in centimeters
+reference_length_cm = 10.0
+
+# Manually measured pixel coordinates
+# Replace these values according to your image
+reference_start = (100, 200)
+reference_end = (400, 200)
+
+pen_start = (120, 300)
+pen_end = (650, 300)
+
+# Calculate Euclidean distance in pixels
+def pixel_distance(point1, point2):
+    return np.sqrt(
+        (point2[0] - point1[0]) ** 2 +
+        (point2[1] - point1[1]) ** 2
+    )
+
+reference_pixels = pixel_distance(
+    reference_start, reference_end
+)
+
+pen_pixels = pixel_distance(
+    pen_start, pen_end
+)
+
+# Calculate calibration ratio
+pixels_per_cm = reference_pixels / reference_length_cm
+
+# Estimate actual pen length
+pen_length_cm = pen_pixels / pixels_per_cm
+
+print("Reference length:", reference_length_cm, "cm")
+print("Reference pixels:", round(reference_pixels, 2))
+print("Pen pixels:", round(pen_pixels, 2))
+print("Pixels per cm:", round(pixels_per_cm, 2))
+print("Estimated pen length:", round(pen_length_cm, 2), "cm")
+
+# Draw measurement lines
+output = image_rgb.copy()
+
+cv2.line(
+    output, reference_start, reference_end,
+    (0, 255, 0), 3
+)
+
+cv2.line(
+    output, pen_start, pen_end,
+    (255, 0, 0), 3
+)
+
+cv2.putText(
+    output,
+    f"Pen: {pen_length_cm:.2f} cm",
+    (pen_start[0], pen_start[1] - 15),
+    cv2.FONT_HERSHEY_SIMPLEX,
+    0.8, (255, 0, 0), 2
+)
+
+plt.figure(figsize=(10, 6))
+plt.imshow(output)
+plt.title("Calibrated Measurement")
+plt.axis("off")
+plt.show()</code></pre>
+
+    <h2>5. Observation</h2>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Observation</th>
+        </tr>
+        <tr>
+            <td>Reference object</td>
+            <td>Object of known length (10 cm)</td>
+        </tr>
+        <tr>
+            <td>Reference pixel length</td>
+            <td>Measured from the input image</td>
+        </tr>
+        <tr>
+            <td>Calibration ratio</td>
+            <td>Pixels per centimeter</td>
+        </tr>
+        <tr>
+            <td>Pen measurement</td>
+            <td>Estimated using the calibration ratio</td>
+        </tr>
+        <tr>
+            <td>Output</td>
+            <td>Pen length displayed in centimeters</td>
+        </tr>
+    </table>
+
+    <h2>6. Result / Conclusion</h2>
+    <div class="result">
+        Camera calibration using a reference object was implemented
+        successfully. The pixel-to-centimeter ratio was calculated,
+        and the real-world length of the pen was estimated from its
+        image.
+    </div>
+
+    <h2>7. Learning Outcomes</h2>
+    <ul>
+        <li>Understand the concept and importance of camera calibration.</li>
+        <li>Learn the relationship between image pixels and real-world measurements.</li>
+        <li>Apply Euclidean distance to measure object dimensions.</li>
+        <li>Use OpenCV and NumPy for image processing and measurement.</li>
+        <li>Understand the limitations of reference-based calibration.</li>
+    </ul>
+
+</div>
+</body>
+</html>
