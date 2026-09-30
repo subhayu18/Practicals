@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision - Practical 9</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            line-height: 1.7;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #e67e73;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 5px solid #e67e73;
+            padding-left: 12px;
+            margin-top: 30px;
+        }
+        pre {
+            background: #202b38;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        code {
+            font-family: Consolas, monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #fce9e6;
+        }
+        .note {
+            background: #fff5f2;
+            border-left: 4px solid #e67e73;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .result {
+            background: #eafaf1;
+            border-left: 5px solid #27ae60;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Computer Vision - Practical 9<br>Face Detection using Haar Cascades and MediaPipe</h1>
+
+    <h2>1. Aim</h2>
+    <p>
+        To write a program to detect faces using Haar Cascades and
+        MediaPipe in Python and OpenCV.
+    </p>
+
+    <h2>2. Software Used</h2>
+    <ul>
+        <li>Python 3.x</li>
+        <li>OpenCV</li>
+        <li>MediaPipe</li>
+        <li>NumPy</li>
+        <li>Jupyter Notebook / Google Colab</li>
+    </ul>
+
+    <h2>3. Theory</h2>
+    <p>
+        Face detection is a computer vision task that identifies the
+        presence and location of human faces in an image or video.
+        It is widely used in surveillance, attendance systems,
+        human-computer interaction, and biometric applications.
+    </p>
+
+    <p><b>Haar Cascade:</b></p>
+    <p>
+        Haar Cascade is a machine learning-based object detection
+        technique that uses Haar-like features, an integral image,
+        and a cascade of classifiers. It is computationally efficient
+        and can detect faces in real time.
+    </p>
+
+    <p><b>MediaPipe:</b></p>
+    <p>
+        MediaPipe provides machine learning solutions for real-time
+        perception tasks. Its face detection model identifies faces
+        and returns bounding boxes and facial keypoints.
+    </p>
+
+    <h2>4. Input Code</h2>
+
+    <pre><code># Install required libraries if necessary
+# pip install opencv-python mediapipe matplotlib
+
+import cv2
+import mediapipe as mp
+import matplotlib.pyplot as plt
+
+# Load input image
+image_path = "face_image.jpg"
+
+image = cv2.imread(image_path)
+
+if image is None:
+    raise FileNotFoundError("Image not found. Check the file path.")
+
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+# --------------------------------------------------
+# METHOD 1: HAAR CASCADE FACE DETECTION
+# --------------------------------------------------
+
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Load pretrained Haar Cascade classifier
+cascade_path = cv2.data.haarcascades + \
+    "haarcascade_frontalface_default.xml"
+
+face_cascade = cv2.CascadeClassifier(cascade_path)
+
+if face_cascade.empty():
+    raise RuntimeError("Unable to load Haar Cascade classifier.")
+
+faces = face_cascade.detectMultiScale(
+    gray,
+    scaleFactor=1.1,
+    minNeighbors=5,
+    minSize=(30, 30)
+)
+
+haar_output = image_rgb.copy()
+
+for (x, y, w, h) in faces:
+    cv2.rectangle(
+        haar_output,
+        (x, y),
+        (x + w, y + h),
+        (0, 255, 0),
+        3
+    )
+
+    cv2.putText(
+        haar_output,
+        "Haar Face",
+        (x, y - 10),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (0, 255, 0),
+        2
+    )
+
+print("Haar Cascade faces detected:", len(faces))
+
+plt.figure(figsize=(10, 6))
+plt.imshow(haar_output)
+plt.title("Haar Cascade Face Detection")
+plt.axis("off")
+plt.show()
+
+# --------------------------------------------------
+# METHOD 2: MEDIAPIPE FACE DETECTION
+# --------------------------------------------------
+
+mp_face_detection = mp.solutions.face_detection
+mp_drawing = mp.solutions.drawing_utils
+
+mediapipe_output = image_rgb.copy()
+
+with mp_face_detection.FaceDetection(
+    model_selection=1,
+    min_detection_confidence=0.5
+) as face_detection:
+
+    results = face_detection.process(image_rgb)
+
+    if results.detections:
+        for detection in results.detections:
+
+            mp_drawing.draw_detection(
+                mediapipe_output,
+                detection
+            )
+
+        print(
+            "MediaPipe faces detected:",
+            len(results.detections)
+        )
+
+    else:
+        print("No faces detected by MediaPipe.")
+
+plt.figure(figsize=(10, 6))
+plt.imshow(mediapipe_output)
+plt.title("MediaPipe Face Detection")
+plt.axis("off")
+plt.show()</code></pre>
+
+    <h2>5. Observation</h2>
+    <table>
+        <tr>
+            <th>Feature</th>
+            <th>Haar Cascade</th>
+            <th>MediaPipe</th>
+        </tr>
+        <tr>
+            <td>Technique</td>
+            <td>Haar-like features and cascade classifiers</td>
+            <td>Machine learning-based face detection</td>
+        </tr>
+        <tr>
+            <td>Output</td>
+            <td>Bounding boxes</td>
+            <td>Bounding boxes and facial keypoints</td>
+        </tr>
+        <tr>
+            <td>Processing</td>
+            <td>Fast on simple images</td>
+            <td>Optimized for real-time perception</td>
+        </tr>
+        <tr>
+            <td>Limitations</td>
+            <td>May be affected by pose, lighting, and occlusion</td>
+            <td>Performance depends on model confidence and image quality</td>
+        </tr>
+    </table>
+
+    <h2>6. Result / Conclusion</h2>
+    <div class="result">
+        Face detection was successfully implemented using both
+        Haar Cascade and MediaPipe. The detected faces were highlighted
+        using bounding boxes, allowing the outputs of the two methods
+        to be observed and compared.
+    </div>
+
+    <h2>7. Learning Outcomes</h2>
+    <ul>
+        <li>Understand the fundamental concept of face detection.</li>
+        <li>Learn how Haar Cascade classifiers work.</li>
+        <li>Implement face detection using MediaPipe.</li>
+        <li>Apply OpenCV for image loading, processing, and visualization.</li>
+        <li>Compare traditional and machine learning-based detection techniques.</li>
+    </ul>
+
+</div>
+</body>
+</html>
