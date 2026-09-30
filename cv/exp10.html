@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision - Practical 10</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            line-height: 1.7;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #e67e73;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 5px solid #e67e73;
+            padding-left: 12px;
+            margin-top: 30px;
+        }
+        pre {
+            background: #202b38;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        code {
+            font-family: Consolas, monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #fce9e6;
+        }
+        .note {
+            background: #fff5f2;
+            border-left: 4px solid #e67e73;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .result {
+            background: #eafaf1;
+            border-left: 5px solid #27ae60;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Computer Vision - Practical 10<br>Object Detection using YOLO</h1>
+
+    <h2>1. Aim</h2>
+    <p>
+        To study and implement the YOLO (You Only Look Once)
+        object detection algorithm for detecting objects such as
+        pedestrians, cars, buses, and trucks from a video.
+    </p>
+
+    <h2>2. Software Used</h2>
+    <ul>
+        <li>Python 3.x</li>
+        <li>OpenCV</li>
+        <li>Ultralytics YOLO</li>
+        <li>PyTorch</li>
+        <li>Jupyter Notebook / Google Colab</li>
+    </ul>
+
+    <h2>3. Theory</h2>
+    <p>
+        YOLO is a real-time object detection algorithm that identifies
+        and localizes multiple objects in an image or video frame.
+        Unlike traditional detection pipelines that perform separate
+        region proposal and classification steps, YOLO processes the
+        image in a single neural network evaluation.
+    </p>
+
+    <p>
+        The model predicts bounding boxes, class probabilities,
+        and confidence scores. Non-Maximum Suppression (NMS) is
+        applied to remove overlapping detections and retain the
+        most relevant bounding boxes.
+    </p>
+
+    <p><b>Important concepts:</b></p>
+    <ul>
+        <li><b>Bounding Box:</b> A rectangle that localizes a detected object.</li>
+        <li><b>Class Label:</b> The category assigned to the detected object.</li>
+        <li><b>Confidence Score:</b> Indicates the model's confidence in a detection.</li>
+        <li><b>Non-Maximum Suppression:</b> Removes redundant overlapping boxes.</li>
+    </ul>
+
+    <div class="note">
+        <b>Note:</b> This experiment uses the pretrained YOLOv8n model
+        and the COCO dataset classes. The model weights are downloaded
+        automatically by Ultralytics when first loaded.
+    </div>
+
+    <h2>4. Input Code</h2>
+
+    <pre><code># Install dependencies
+# pip install ultralytics opencv-python
+
+import cv2
+from ultralytics import YOLO
+
+# Load pretrained YOLO model
+model = YOLO("yolov8n.pt")
+
+# Input video path
+video_path = "input_video.mp4"
+
+# Open video
+cap = cv2.VideoCapture(video_path)
+
+if not cap.isOpened():
+    raise FileNotFoundError(
+        "Unable to open video. Check the file path."
+    )
+
+# Get video properties
+fps = cap.get(cv2.CAP_PROP_FPS)
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+print("Video FPS:", fps)
+print("Video resolution:", width, "x", height)
+
+# Output video configuration
+output_path = "yolo_output.mp4"
+
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+
+out = cv2.VideoWriter(
+    output_path,
+    fourcc,
+    fps if fps > 0 else 25,
+    (width, height)
+)
+
+# COCO class IDs:
+# 0 = person, 2 = car, 5 = bus, 7 = truck
+target_classes = [0, 2, 5, 7]
+
+frame_count = 0
+
+while cap.isOpened():
+
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    frame_count += 1
+
+    # Perform object detection
+    results = model(
+        frame,
+        conf=0.4,
+        classes=target_classes,
+        verbose=False
+    )
+
+    # Draw bounding boxes and labels
+    annotated_frame = results[0].plot()
+
+    # Save processed frame
+    out.write(annotated_frame)
+
+    # Display output
+    cv2.imshow(
+        "YOLO Object Detection",
+        annotated_frame
+    )
+
+    # Press q to stop
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+# Release resources
+cap.release()
+out.release()
+cv2.destroyAllWindows()
+
+print("Total frames processed:", frame_count)
+print("Output saved to:", output_path)</code></pre>
+
+    <h2>5. Observation</h2>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Observation</th>
+        </tr>
+        <tr>
+            <td>Algorithm</td>
+            <td>YOLOv8</td>
+        </tr>
+        <tr>
+            <td>Model</td>
+            <td>YOLOv8n (Nano)</td>
+        </tr>
+        <tr>
+            <td>Input</td>
+            <td>Video containing vehicles and/or pedestrians</td>
+        </tr>
+        <tr>
+            <td>Detected classes</td>
+            <td>Person, car, bus, and truck</td>
+        </tr>
+        <tr>
+            <td>Output</td>
+            <td>Video with bounding boxes, labels, and confidence scores</td>
+        </tr>
+        <tr>
+            <td>Performance</td>
+            <td>Depends on hardware, video resolution, and scene complexity</td>
+        </tr>
+    </table>
+
+    <h2>6. Result / Conclusion</h2>
+    <div class="result">
+        YOLO-based object detection was successfully implemented
+        on video frames. Pedestrians and vehicles were identified
+        using bounding boxes and class labels, and the processed
+        video was saved as an output file.
+    </div>
+
+    <h2>7. Learning Outcomes</h2>
+    <ul>
+        <li>Understand the working principle of the YOLO algorithm.</li>
+        <li>Learn the difference between object detection and image classification.</li>
+        <li>Implement real-time object detection using a pretrained model.</li>
+        <li>Process video frames using OpenCV and YOLO.</li>
+        <li>Understand bounding boxes, confidence scores, and object localization.</li>
+    </ul>
+
+</div>
+</body>
+</html>
