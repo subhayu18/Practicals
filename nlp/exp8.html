@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP - Experiment 8</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#000;
+    line-height:1.6;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section{
+    background:#fff;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:12px;
+    border-left:5px solid #ff6b81;
+    padding-left:10px;
+}
+
+ul{
+    margin-left:22px;
+}
+
+pre{
+    background:#1e1e1e;
+    color:#fff;
+    padding:18px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:14px;
+    line-height:1.6;
+}
+
+code{
+    font-family:Consolas,monospace;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table,th,td{
+    border:1px solid #ccc;
+}
+
+th{
+    background:#ffe5eb;
+}
+
+th,td{
+    padding:12px;
+    text-align:left;
+}
+
+.outcomes li{
+    margin-bottom:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Natural Language Processing - Experiment 8<br>
+Chunking Techniques and Building a Chunker</h1>
+
+<div class="section">
+<h2>Aim</h2>
+<p>
+To implement chunking techniques in Natural Language Processing using NLTK and identify meaningful phrases such as noun phrases and verb phrases from a given sentence.
+</p>
+</div>
+
+<div class="section">
+<h2>Software Used</h2>
+<ul>
+<li>Python 3.10+</li>
+<li>NLTK (Natural Language Toolkit)</li>
+<li>Jupyter Notebook / Google Colab / VS Code</li>
+<li>Python re module</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Theory</h2>
+<p>
+Chunking is a shallow parsing technique used in NLP to identify meaningful groups of words, called chunks, within a sentence. Unlike full parsing, chunking does not attempt to construct a complete grammatical structure but focuses on identifying specific phrases such as noun phrases (NP), verb phrases (VP), and prepositional phrases (PP).
+</p>
+
+<p>
+Chunking is generally performed on POS-tagged text. NLTK provides the <b>RegexpParser</b> class, which uses regular-expression-based grammatical rules to group words according to their POS tags. Chunking is useful in information extraction, named entity recognition, and text understanding.
+</p>
+</div>
+
+<div class="section">
+<h2>Input Code</h2>
+
+<pre><code>import nltk
+
+# Sample sentence
+sentence = "The quick brown fox jumps over the lazy dog"
+
+# Tokenization
+tokens = nltk.word_tokenize(sentence)
+
+# POS Tagging
+tagged_words = nltk.pos_tag(tokens)
+
+print("POS Tagged Words:")
+print(tagged_words)
+
+# Define chunking grammar
+grammar = r"""
+    NP: {<DT>?<JJ>*<NN.*>+}
+    VP: {<VB.*><NP|PP>*}
+    PP: {<IN><NP>}
+"""
+
+# Create chunk parser
+chunk_parser = nltk.RegexpParser(grammar)
+
+# Perform chunking
+result = chunk_parser.parse(tagged_words)
+
+# Display chunk tree
+print("\nChunked Output:")
+print(result)
+
+# Display tree in readable format
+result.pretty_print()</code></pre>
+
+</div>
+
+<div class="section">
+<h2>Observation</h2>
+
+<table>
+<tr>
+<th>Operation</th>
+<th>Observation</th>
+</tr>
+
+<tr>
+<td>Tokenization</td>
+<td>The input sentence was divided into individual words.</td>
+</tr>
+
+<tr>
+<td>POS Tagging</td>
+<td>Each token was assigned a grammatical category.</td>
+</tr>
+
+<tr>
+<td>Grammar Definition</td>
+<td>Regular-expression rules were defined to identify noun, verb, and prepositional phrases.</td>
+</tr>
+
+<tr>
+<td>Chunk Formation</td>
+<td>Meaningful groups of words were identified based on their POS tags.</td>
+</tr>
+
+<tr>
+<td>Tree Representation</td>
+<td>The resulting chunks were displayed in a hierarchical tree structure.</td>
+</tr>
+</table>
+</div>
+
+<div class="section">
+<h2>Result / Conclusion</h2>
+<p>
+Chunking was successfully implemented using NLTK's RegexpParser. The program identified meaningful phrases from POS-tagged text using predefined grammatical rules and displayed the resulting chunk structure. The experiment demonstrated the importance of shallow parsing in extracting syntactic information from natural language.
+</p>
+</div>
+
+<div class="section">
+<h2>Learning Outcomes</h2>
+<ul class="outcomes">
+<li>Understand the concept of shallow parsing.</li>
+<li>Perform POS tagging before chunking.</li>
+<li>Define chunking rules using regular expressions.</li>
+<li>Identify noun, verb, and prepositional phrases.</li>
+<li>Apply chunking in information extraction tasks.</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>
